@@ -30,14 +30,11 @@ GREEN2   = (   0, 220,   0)
 BLUE     = (   0,   0, 255)
 BLACK    = (   0,   0,   0)
 
-PLANET_NAME = ("Mercury", "Venus", "Earth", "Mars")
-PLANET_COLR = (BLACK, ORANGE, BLUE, RED)
-PLANET_SIZE = (4.9, 12.1, 12.7, 6.8)
-PLANET_DIST = (0.4, 0.7, 1.0, 1.5)
-pl_opey = []    # planets' orbital periods in earth years
-for p in range (4): 
-  opey = PLANET_DIST[p] ** (3.0/2.0) 
-  pl_opey.append(opey) 
+PLANET_NAME = ["Mercury", "Venus", "Earth", "Mars"]
+PLANET_COLR = {pname: color for pname, color in zip(PLANET_NAME, (BLACK, ORANGE, BLUE, RED))}
+PLANET_SIZE = {pname: size for pname, size in zip(PLANET_NAME, (4.9, 12.1, 12.7, 6.8))}
+PLANET_DIST = {pname: d for pname, d in zip(PLANET_NAME, (0.4, 0.7, 1.0, 1.5))}
+pl_opey = {pname: PLANET_DIST[pname]**(3.0/2.0) for pname in PLANET_NAME}
 print ("Planets:", PLANET_NAME)
 print ("  colrs:", PLANET_COLR)
 print ("  sizes:", PLANET_SIZE)
@@ -64,8 +61,8 @@ def game_loop():
   game_done = False
   ctr = 0; gm_speed = 1.0
 
-  pl_trail_X = [deque(maxlen=600) for _ in range(5)]    # planets' orbit trails - X values
-  pl_trail_Y = [deque(maxlen=600) for _ in range(5)]    # planets' orbit trails - Y values
+  pl_trail_X = {pname: deque(maxlen=600) for pname in PLANET_NAME + ['Moon']}    # planets' orbit trails - X values
+  pl_trail_Y = {pname: deque(maxlen=600) for pname in PLANET_NAME + ['Moon']}    # planets' orbit trails - Y values
   #pl_trail_ctr = 0
   
   while not game_done:
@@ -86,14 +83,14 @@ def game_loop():
           print("  User pressed PLUS.")
           gm_speed *= 2; ctr = 0
           message_display('faster')
-          pl_trail_X[4].clear(); pl_trail_Y[4].clear()
+          pl_trail_X['Moon'].clear(); pl_trail_Y['Moon'].clear()
           pygame.display.set_caption("Planets - game speed = " + str(gm_speed)) 
         if event.key == K_KP_MINUS:   # user pressed '-' key
           print("  User pressed MINUS.")
           gm_speed /= 2; ctr = 0
           pygame.display.set_caption("Planets - game speed = " + str(gm_speed))
           message_display('slower')
-          pl_trail_X[4].clear(); pl_trail_Y[4].clear() 
+          pl_trail_X['Moon'].clear(); pl_trail_Y['Moon'].clear()
         if event.key == K_p:   # user pressed 'p' key
           print("  User pressed 'p'.")
           message_display('paused')
@@ -107,7 +104,7 @@ def game_loop():
     
     earthDays = 365.25*ctr*gm_speed/math.pi/2/fineness
     
-    for p in range (4):     # the 4 planets
+    for p in PLANET_NAME:     # the 4 planets
       pR = 200.0 * PLANET_DIST[p] 
       pX = pR * math.cos(ctr*gm_speed/fineness/pl_opey[p])
       pY = pR * math.sin(ctr*gm_speed/fineness/pl_opey[p])
@@ -125,16 +122,16 @@ def game_loop():
         pl_trail_Y[p].append(qY)
         #print("%%%", ctr, len(pl_trail_X[p]))
       if p == 2 and ctr%5 == 0:   #moon trail   
-        pl_trail_X[4].append(mX)
-        pl_trail_Y[4].append(mY)
+        pl_trail_X['Moon'].append(mX)
+        pl_trail_Y['Moon'].append(mY)
       if len(pl_trail_X[p]) > 1:
         #print("pl_trail_ctr =", len(pl_trail_X[p])) 
         for tctr in range (len(pl_trail_X[p])):
           pygame.gfxdraw.pixel(screen, pl_trail_X[p][tctr], pl_trail_Y[p][tctr], PLANET_COLR[p])  #draw planet trail
 
-    if len(pl_trail_X[4]) > 1:
-      for tctr in range (len(pl_trail_X[4])):
-        pygame.gfxdraw.pixel(screen, pl_trail_X[4][tctr], pl_trail_Y[4][tctr], OLIVE)   #draw moon trail
+    if len(pl_trail_X['Moon']) > 1:
+      for tctr in range (len(pl_trail_X['Moon'])):
+        pygame.gfxdraw.pixel(screen, pl_trail_X['Moon'][tctr], pl_trail_Y['Moon'][tctr], OLIVE)   #draw moon trail
        
     GAME_FONT.render_to(screen, (510, 10), "* Mercury", BLACK)
     GAME_FONT.render_to(screen, (520, 20), "* Venus", ORANGE)
@@ -158,7 +155,7 @@ def game_loop():
 
   print("ctr =", ctr)
   print("trails...") 
-  for p in range (5):
+  for p in PLANET_NAME:
     print(p, len(pl_trail_X[p])) 
     #print("   ", len(pl_trail_X[p]), pl_trail_X[p])
 
