@@ -81,13 +81,13 @@ def game_loop():
           print("  User pressed ESC.")
           message_display('escape')
           game_done = True
-        if event.key == K_KP_PLUS:    # user pressed '+' key
+        if event.unicode == '+':    # user pressed '+' key
           print("  User pressed PLUS.")
           gm_speed *= 2; ctr = 0
           message_display('faster')
           pl_trail_X[4].clear(); pl_trail_Y[4].clear()
           pygame.display.set_caption("Planets - game speed = " + str(gm_speed)) 
-        if event.key == K_KP_MINUS:   # user pressed '-' key
+        if event.unicode == '-':   # user pressed '-' key
           print("  User pressed MINUS.")
           gm_speed /= 2; ctr = 0
           pygame.display.set_caption("Planets - game speed = " + str(gm_speed))
