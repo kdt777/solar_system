@@ -6,6 +6,7 @@ import pygame.gfxdraw
 
 import math
 import time
+from collections import deque
 
 import os
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (660,40)
@@ -63,8 +64,8 @@ def game_loop():
   game_done = False
   ctr = 0; gm_speed = 1.0
 
-  pl_trail_X = [[] for _ in range(5)]    # planets' orbit trails - X values
-  pl_trail_Y = [[] for _ in range(5)]    # planets' orbit trails - Y values
+  pl_trail_X = [deque(maxlen=600) for _ in range(5)]    # planets' orbit trails - X values
+  pl_trail_Y = [deque(maxlen=600) for _ in range(5)]    # planets' orbit trails - Y values
   #pl_trail_ctr = 0
   
   while not game_done:
@@ -122,17 +123,10 @@ def game_loop():
       if ctr%20 == 0:   #planet trail
         pl_trail_X[p].append(qX)
         pl_trail_Y[p].append(qY)
-        if len(pl_trail_X[p]) > 600: 
-          pl_trail_X[p].pop(0)
-          pl_trail_Y[p].pop(0)
         #print("%%%", ctr, len(pl_trail_X[p]))
       if p == 2 and ctr%5 == 0:   #moon trail   
         pl_trail_X[4].append(mX)
         pl_trail_Y[4].append(mY)
-        if len(pl_trail_X[4]) > 400: 
-          pl_trail_X[4].pop(0)
-          pl_trail_Y[4].pop(0)
-
       if len(pl_trail_X[p]) > 1:
         #print("pl_trail_ctr =", len(pl_trail_X[p])) 
         for tctr in range (len(pl_trail_X[p])):
