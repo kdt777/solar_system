@@ -112,7 +112,7 @@ def game_loop():
       qY = int(Oy - pY)
       pygame.draw.circle(screen, PLANET_COLR[p], 
                           [qX, qY], int(PLANET_SIZE[p]), 0)     #draw planet
-      if p == 2:  # earth
+      if p == 'Earth':  # earth
         mX = int(Ox + pX + 25 * math.cos(earthDays*math.pi/14.5))
         mY = int(Oy - pY - 25 * math.sin(earthDays*math.pi/14.5))
         pygame.draw.circle(screen, OLIVE, [mX, mY], 3, 0)       #draw moon
@@ -121,7 +121,7 @@ def game_loop():
         pl_trail_X[p].append(qX)
         pl_trail_Y[p].append(qY)
         #print("%%%", ctr, len(pl_trail_X[p]))
-      if p == 2 and ctr%5 == 0:   #moon trail   
+      if p == 'Earth' and ctr%5 == 0:   #moon trail
         pl_trail_X['Moon'].append(mX)
         pl_trail_Y['Moon'].append(mY)
       if len(pl_trail_X[p]) > 1:
